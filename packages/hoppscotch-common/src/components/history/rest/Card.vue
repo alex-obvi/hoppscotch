@@ -19,16 +19,19 @@
       v-tippy="{
         theme: 'tooltip',
         delay: [500, 20],
-        content: entry.updatedOn ? shortDateTime(entry.updatedOn) : null,
+        content: entry.request.endpoint,
+        onShow: showEndpointTooltip,
       }"
       class="flex min-w-0 flex-1 cursor-pointer py-2 pr-2 transition group-hover:text-secondaryDark"
       data-testid="restore_history_entry"
+      tabindex="0"
       @click="emit('use-entry')"
     >
-      <span class="truncate">
+      <span ref="endpointLabel" class="truncate">
         {{ entry.request.endpoint }}
       </span>
     </span>
+    <HistoryRelativeTime v-if="entry.updatedOn" :date="entry.updatedOn" />
     <span>
       <tippy
         ref="options"
@@ -88,7 +91,7 @@ import { computed, ref } from "vue"
 import findStatusGroup from "~/helpers/findStatusGroup"
 import { useI18n } from "@composables/i18n"
 import { RESTHistoryEntry } from "~/newstore/history"
-import { shortDateTime } from "~/helpers/utils/date"
+import { isTruncated } from "~/helpers/utils/dom"
 import IconSave from "~icons/lucide/save"
 import IconStar from "~icons/lucide/star"
 import IconStarOff from "~icons/hopp/star-off"
@@ -112,6 +115,14 @@ const options = ref<TippyComponent | null>(null)
 const addToCollectionAction = ref<HTMLButtonElement | null>(null)
 
 const t = useI18n()
+
+const endpointLabel = ref<HTMLElement | null>(null)
+
+// Truncation-gated tooltip (D7): the row span is the tippy trigger, but the
+// inner label is what clips — measure the clipping element, re-measured live
+// at every activation (hover and keyboard focus), so a fitting endpoint
+// never opens a tooltip.
+const showEndpointTooltip = () => isTruncated(endpointLabel.value)
 
 const duration = computed(() => {
   if (props.entry.responseMeta.duration) {

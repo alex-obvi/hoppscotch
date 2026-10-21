@@ -193,6 +193,7 @@ declare module 'vue' {
     HistoryPersonal: typeof import('./components/history/Personal.vue')['default']
     HistoryRestCard: typeof import('./components/history/rest/Card.vue')['default']
     HoppButtonPrimary: typeof import('@hoppscotch/ui')['HoppButtonPrimary']
+    HistoryRelativeTime: typeof import('./components/history/RelativeTime.vue')['default']
     HoppButtonSecondary: typeof import('@hoppscotch/ui')['HoppButtonSecondary']
     HoppSmartAnchor: typeof import('@hoppscotch/ui')['HoppSmartAnchor']
     HoppSmartCheckbox: typeof import('@hoppscotch/ui')['HoppSmartCheckbox']
