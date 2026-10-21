@@ -1,5 +1,10 @@
 import { describe, expect, test } from "vitest"
-import { isDOMElement, isTypableElement, isCodeMirrorEditor } from "../dom"
+import {
+  isDOMElement,
+  isTypableElement,
+  isCodeMirrorEditor,
+  isTruncated,
+} from "../dom"
 
 describe("isDOMElement", () => {
   test("returns true for valid HTMLElement", () => {
@@ -73,5 +78,26 @@ describe("isCodeMirrorEditor", () => {
   test("returns false if input is not an HTMLElement", () => {
     expect(isCodeMirrorEditor(null)).toBe(false)
     expect(isCodeMirrorEditor("not-an-element")).toBe(false)
+  })
+})
+
+describe("isTruncated", () => {
+  test("returns false for null or undefined elements", () => {
+    expect(isTruncated(null)).toBe(false)
+    expect(isTruncated(undefined)).toBe(false)
+  })
+
+  test("returns false when the content fits (no clipping)", () => {
+    const span = document.createElement("span")
+    Object.defineProperty(span, "scrollWidth", { value: 100 })
+    Object.defineProperty(span, "clientWidth", { value: 100 })
+    expect(isTruncated(span)).toBe(false)
+  })
+
+  test("returns true when the content is clipped", () => {
+    const span = document.createElement("span")
+    Object.defineProperty(span, "scrollWidth", { value: 240 })
+    Object.defineProperty(span, "clientWidth", { value: 120 })
+    expect(isTruncated(span)).toBe(true)
   })
 })
