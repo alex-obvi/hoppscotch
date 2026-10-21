@@ -51,3 +51,12 @@ export function isInShortcutsFlyout(el: EventTarget | null): boolean {
 
   return false
 }
+
+/**
+ * Checks whether an element actually clips its content (CSS truncation, e.g.
+ * `truncate`), so a tooltip is only offered when the full text is hidden.
+ */
+export function isTruncated(el: HTMLElement | null | undefined): boolean {
+  if (!el) return false
+  return el.scrollWidth > el.clientWidth
+}
